@@ -1,0 +1,17 @@
+bamboo-data:
+  image: "busybox:latest"
+  volumes:
+    - /home/bamboo
+bamboo:
+  image: "bamboo-server:0.3"
+  volumes_from:
+    - bamboo-data
+  container_name: bamboo-server
+  environment:
+    - TZ=America/Toronot
+    - JAVA_OPTS=-Xmx1024m
+    - BAMBOO_VERSION=5.10.3
+  ports:
+    - 8085:8085
+    - 54663:54663
+

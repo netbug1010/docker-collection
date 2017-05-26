@@ -1,0 +1,18 @@
+jenkins:
+  image: "jenkins:latest"
+  volumes:
+    - ./data:/var/jenkins_home
+  environment:
+    JAVA_OPTS: "-Djava.awt.headless=true"
+  restart: always  
+nginx:
+  image: "nginx:latest"
+  volumes:
+    - ./config:/etc/nginx/conf.d
+    - ./log:/var/log/nginx/log
+  ports:
+    - 443:443
+    - 80:80
+  links:
+    - jenkins
+  restart: always

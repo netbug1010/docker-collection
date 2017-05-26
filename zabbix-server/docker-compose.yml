@@ -1,0 +1,32 @@
+zabbix-db-storage:
+  container_name: zabbix-db-storage
+  image: busybox:latest
+  volumes:
+    - /var/lib/mysql
+
+zabbix-db:
+  image: zabbix/zabbix-db-mariadb
+  volumes:
+    - /backups:/backups
+    - /etc/localtime:/etc/localtime:ro
+  volumes_from:
+    - zabbix-db-storage
+  ports:
+    - 3306:3306
+  environment:
+    - MARIADB_USER=zabbix
+    - MARIADB_PASS=zabbix
+
+zabbix-server:
+  image: zabbix/zabbix-3.0:latest
+  ports:
+    - "80:80"
+    - "10051:10051"
+  volumes:
+    - /etc/localtime:/etc/localtime:ro
+  links:
+    - zabbix-db:zabbix.db
+  environment:
+    - ZS_DBHost=zabbix.db
+    - ZS_DBUser=zabbix
+    - ZS_DBPassword=zabbix
